@@ -116,7 +116,11 @@ class BotController extends Controller
                         $text_message = "Temperatura: 20C < x < 27C\n";
                         $text_message .= "Havo namligi: 45% < x < 60%\n";
                         $text_message .= "Tuproq namligi: 23% < x  < 40%\n";
-                        $bot->sendMessage($user_id, $text_message);
+                        $button = new Keyboard();
+                        $button->addCustomButton("O'zgartirish");
+                        $bot->sendMessage($user_id, $text_message, [
+                            'reply_markup' => $button->init(),
+                        ]);
                     }
 
                 }
