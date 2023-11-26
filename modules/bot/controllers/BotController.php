@@ -52,6 +52,8 @@ class BotController extends Controller
                 $user_id = $bot->from_id;
 
                 if ($message->isFrom() && $type == Chat::TYPE_PRIVATE) {
+                    $data = file_get_contents("data/value.txt");
+                    $array = explode(",", $data);
 
                     if ($text == "/start" || $text == "Ortga") {
                         $menuKeyBoard = new Keyboard();
@@ -64,15 +66,52 @@ class BotController extends Controller
                             'reply_markup' => $menuKeyBoard->init()
                         ]);
                     } elseif ($text == "Miqdor") {
-                        $text_message = "Temperatura: 20C\n";
-                        $text_message .= "Havo namligi: 45%\n";
-                        $text_message .= "Tuproq namligi: 23%\n";
+                        $text_message = "Temperatura: {$array[0]}C\n";
+                        $text_message .= "Havo namligi: {$array[1]}%\n";
+                        $text_message .= "Tuproq namligi: {$array[2]}%\n";
                         $bot->sendMessage($user_id, $text_message);
                     } elseif ($text == "Qurilmalar") {
-                        $text_message = "Nasos: Yoniq\n";
-                        $text_message .= "Ventilyator: O'chiq\n";
-                        $text_message .= "Tomchiliab sug'orish: Yoniq\n";
+                        $nasos = "Ochiq";
+                        $vent = "Yoniq";
+                        $tomchi = "Ochiq";
+                        if (isset($array[7])) {
+                            if (($array[4] == "N")) {
+                                $nasos = "Yoniq";
+                            }
+                            if (($array[4] == "n")) {
+                                $nasos = "O'chiq";
+                            }
+                        } else {
+                            $nasos = "O'chiq";
+                        }
+                        if (isset($array[7])) {
+                            if (($array[5] == "V")) {
+                                $vent = "Yoniq";
+                            }
+                            if (($array[5] == "v")) {
+                                $vent = "O'chiq";
+                            }
+                        } else {
+                            $vent = "O'chiq";
+                        }
+
+
+                        if (isset($array[7])) {
+                            if (($array[7] == "T")) {
+                                $tomchi = "Yoniq";
+                            }
+                            if (($array[7] == "t")) {
+                                $tomchi = "O'chiq";
+                            }
+                        } else {
+                            $tomchi = "O'chiq";
+                        }
+
+                        $text_message = "Nasos: " . $nasos . "\n";
+                        $text_message .= "Ventilyator: " . $vent . "\n";
+                        $text_message .= "Tomchiliab sug'orish: " . $tomchi . "\n";
                         $bot->sendMessage($user_id, $text_message);
+
                     } elseif ($text == "O'rtacha qiymat") {
                         $text_message = "Temperatura: 20C < x < 27C\n";
                         $text_message .= "Havo namligi: 45% < x < 60%\n";
